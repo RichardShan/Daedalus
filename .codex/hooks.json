@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .daedalus/scripts/feedback-resume.cjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .daedalus/scripts/session-bind.cjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

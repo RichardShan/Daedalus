@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="../media/webview.css">
+  <title>Daedalus UI Preview</title>
+</head>
+<body class="vscode-dark">
+  <div id="root"></div>
+  <script>
+    const sample = {
+      type: "state",
+      workspace: "Daedalus",
+      version: "0.21.12",
+      preferences: { languageSetting: "auto", language: "zh-CN", editorLanguage: "zh-cn", themeSetting: "auto", editorTheme: "dark" },
+      conversationSignal: { version: 1, workflowId: "standard-development", currentStepId: "design", suggestedStepId: "implementation", suggestedStepName: "编码实现", excerpt: "技术方案与模块边界已经确认，可以进入编码实现。", detectedAt: new Date().toISOString() },
+      git: [{ root: "/demo/Daedalus", name: "Daedalus", relativeRoot: ".", branch: "main", lastCommit: "feat: add workspace governance", kind: "git", files: [
+        { status: " M", indexStatus: " ", worktreeStatus: "M", untracked: false, path: "src/extension.ts" },
+        { status: "??", indexStatus: "?", worktreeStatus: "?", untracked: true, path: "src/git-panel.ts" },
+        { status: "A ", indexStatus: "A", worktreeStatus: " ", untracked: false, path: "media/git-view.css" }
+      ] }],
+      agentExecution: { status: "idle" },
+      config: { version: 1, workspaceName: "Daedalus", activeWorkflowId: "standard-development", imports: [], localImports: [], linkedKnowledgeDirs: [{ id: "linked-preview-handbook", name: "团队研发手册", path: "/demo/team-handbook", scope: "project", linkedAt: new Date().toISOString() }], settings: { language: "auto", feedbackEnabled: true, continuousFeedback: false, autoExecuteOnAdvance: true, artifactOutput: { mode: "workspace", directory: ".daedalus/artifacts" } }, workflows: [{ id: "standard-development", name: "标准研发流程", description: "从需求澄清到测试验收的默认全流程。", agentId: "agent:implementation", steps: [
+        { id: "requirement", name: "需求梳理", description: "明确目标、边界与验收标准。", skillIds: ["skill:requirement-analysis"], ruleIds: ["rule:workspace-scope", "rule:evidence-first"], standards: ["输出需求摘要", "列出验收标准"] },
+        { id: "design", name: "技术设计", description: "形成与现有代码一致的实现方案。", skillIds: ["skill:technical-design"], ruleIds: ["rule:safe-change"], standards: ["说明模块边界", "定义验证方案"] },
+        { id: "implementation", name: "编码实现", description: "按设计小步实现并持续验证。", skillIds: ["skill:implementation"], ruleIds: ["rule:safe-change", "rule:evidence-first"], standards: ["保护已有改动", "不得写入凭据", "保持改动聚焦"] },
+        { id: "verification", name: "测试验收", description: "验证功能、边界和交付质量。", skillIds: ["skill:verification"], ruleIds: ["rule:evidence-first"], standards: ["类型检查通过", "相关测试通过", "记录未验证项和风险"] }
+      ] }, { id: "test-case-alignment", name: "用例驱动对齐", description: "以已有测试用例为准绳完成实现、核对和验收。", agentId: "agent:quality-review", inputs: [{ id: "test-cases", name: "测试用例来源", description: "请提供测试用例 URL、截图路径/地址，或直接粘贴测试用例文字。", required: true, accepts: ["url", "image", "text"] }], steps: [
+        { id: "case-intake", name: "测试用例解析", description: "读取测试用例并提取前置条件、操作和预期结果。", skillIds: ["skill:requirement-analysis"], ruleIds: ["rule:evidence-first"], standards: ["每条用例可追踪", "标记缺失信息"] },
+        { id: "case-mapping", name: "代码映射与差距分析", description: "把每条用例映射到代码路径并识别差距。", skillIds: ["skill:technical-design"], ruleIds: ["rule:workspace-scope", "rule:evidence-first"], standards: ["建立用例到代码映射", "列出实现差距"] },
+        { id: "case-implementation", name: "对齐实现", description: "按用例差距完成最小实现。", skillIds: ["skill:implementation"], ruleIds: ["rule:safe-change"], standards: ["逐条对应测试用例", "避免超范围改动"] },
+        { id: "case-verification", name: "用例逐项验收", description: "逐条执行或验证测试用例并形成结果。", skillIds: ["skill:verification"], ruleIds: ["rule:evidence-first"], standards: ["记录每条用例结果"] }
+      ] }, { id: "code-review", name: "代码 Review", description: "面向正确性、安全性、可维护性和测试充分性的系统审查。", agentId: "agent:quality-review", steps: [
+        { id: "review-scope", name: "确认审查范围", description: "确认变更基线、目标和风险区域。", skillIds: ["skill:requirement-analysis"], ruleIds: ["rule:evidence-first"], standards: ["明确 Diff 范围"] },
+        { id: "review-analysis", name: "代码审查", description: "检查缺陷、回归、安全、性能和维护成本。", skillIds: ["skill:technical-design", "skill:verification"], ruleIds: ["rule:safe-change", "rule:evidence-first"], standards: ["问题必须可定位"] },
+        { id: "review-fixes", name: "修复与复核", description: "修复确认的问题并复核影响范围。", skillIds: ["skill:implementation"], ruleIds: ["rule:safe-change"], standards: ["只修复确认问题", "增加必要测试"] },
+        { id: "review-report", name: "Review 结论", description: "输出问题、证据、修复状态和剩余风险。", skillIds: ["skill:verification"], ruleIds: ["rule:evidence-first"], standards: ["按优先级排序", "明确通过或阻塞"] }
+      ] }] },
+      state: { version: 2, progress: [{ workflowId: "standard-development", currentStepId: "design", completed: [{ stepId: "requirement", summary: "范围和验收标准已确认", completedAt: new Date().toISOString() }] }], runs: [], localChanges: [], gates: [
+        { id: "conversation-preview", type: "feedback", title: "独立产品讨论", message: "帮我梳理一个与当前 Workspace 无关的产品想法。", createdAt: new Date(Date.now() - 900000).toISOString(), updatedAt: new Date(Date.now() - 840000).toISOString(), status: "pending", origin: "user", messages: [
+          { role: "user", content: "帮我梳理一个与当前 Workspace 无关的产品想法。", createdAt: new Date(Date.now() - 900000).toISOString() },
+          { role: "agent", content: "可以。先从目标用户、核心问题和最小可验证方案三个方面开始。你最希望先明确哪一个？", createdAt: new Date(Date.now() - 840000).toISOString() }
+        ] },
+        { id: "gate", type: "approval", title: "确认技术方案", message: "是否按当前模块边界进入编码？", createdAt: new Date(Date.now() - 180000).toISOString(), status: "pending" },
+        { id: "gate-resolved-1", type: "approval", title: "需求范围确认", message: "确认需求范围已明确，验收标准已对齐。", createdAt: new Date(Date.now() - 7200000).toISOString(), status: "resolved", decision: "approve", response: "确认，可以进入技术设计。", resolvedAt: new Date(Date.now() - 7000000).toISOString() },
+        { id: "gate-resolved-2", type: "feedback", title: "API 命名建议", message: "建议将 getUserList 改为 queryUsers，更符合团队约定。", createdAt: new Date(Date.now() - 86400000).toISOString(), status: "resolved", decision: "respond", response: "同意修改，已经在技术方案中调整。", resolvedAt: new Date(Date.now() - 85000000).toISOString() }
+      ] },
+      library: [
+        { id: "skill:requirement-analysis", kind: "skill", name: "需求澄清", description: "识别目标、边界和验收标准。", source: "default", relativePath: ".daedalus/skills/requirement-analysis/SKILL.md" },
+        { id: "skill:technical-design", kind: "skill", name: "技术设计", description: "形成可维护的实现方案。", source: "default", relativePath: ".daedalus/skills/technical-design/SKILL.md" },
+        { id: "skill:implementation", kind: "skill", name: "增量实现", description: "小步完成代码改动。", source: "default", relativePath: ".daedalus/skills/implementation/SKILL.md" },
+        { id: "skill:verification", kind: "skill", name: "测试与验收", description: "验证功能、边界和交付质量。", source: "default", relativePath: ".daedalus/skills/verification/SKILL.md" },
+        { id: "skill:pre-development", kind: "skill", name: "Pre-development Check", description: "Load project-specific guidelines before implementation.", source: "default", relativePath: ".daedalus/skills/pre-development/SKILL.md" },
+        { id: "skill:requirement-workshop", kind: "skill", name: "Requirement Workshop", description: "Collaborative requirement discovery and scope convergence.", source: "default", relativePath: ".daedalus/skills/requirement-workshop/SKILL.md" },
+        { id: "skill:root-cause-review", kind: "skill", name: "Root-cause Review", description: "Analyze root causes and prevent repeated defects.", source: "default", relativePath: ".daedalus/skills/root-cause-review/SKILL.md" },
+        { id: "skill:multi-agent-collaboration", kind: "skill", name: "Multi-agent Collaboration", description: "Coordinate multiple agents and collaboration records.", source: "default", relativePath: ".daedalus/skills/multi-agent-collaboration/SKILL.md" },
+        { id: "skill:quality-verification", kind: "skill", name: "Quality Verification", description: "Run comprehensive code quality verification.", source: "default", relativePath: ".daedalus/skills/quality-verification/SKILL.md" },
+        { id: "skill:agent-configuration", kind: "skill", name: "Agent Configuration", description: "Manage local Agent architecture and configuration.", source: "default", relativePath: ".daedalus/skills/agent-configuration/SKILL.md" },
+        { id: "skill:session-insights", kind: "skill", name: "Session Insights", description: "Find useful context in previous development sessions.", source: "default", relativePath: ".daedalus/skills/session-insights/SKILL.md" },
+        { id: "skill:standards-bootstrap", kind: "skill", name: "Standards Bootstrap", description: "Initialize codebase-backed development standards.", source: "default", relativePath: ".daedalus/skills/standards-bootstrap/SKILL.md" },
+        { id: "skill:standards-capture", kind: "skill", name: "Standards Capture", description: "Capture learned conventions into project standards.", source: "default", relativePath: ".daedalus/skills/standards-capture/SKILL.md" },
+        { id: "rule:workspace-scope", kind: "rule", name: "Workspace 边界", description: "隔离项目配置和状态。", source: "default", relativePath: ".daedalus/rules/workspace-scope.md" },
+        { id: "rule:evidence-first", kind: "rule", name: "证据优先", description: "用代码和测试支持结论。", source: "default", relativePath: ".daedalus/rules/evidence-first.md" },
+        { id: "rule:safe-change", kind: "rule", name: "安全变更", description: "保护已有工作。", source: "default", relativePath: ".daedalus/rules/safe-change.md" }
+        ,{ id: "agent:implementation", kind: "agent", name: "Implementation Agent", description: "Daedalus implementation agent.", source: "default", relativePath: ".daedalus/agents/implementation.md" }
+        ,{ id: "agent:quality-review", kind: "agent", name: "Quality Review Agent", description: "Daedalus review and verification agent.", source: "default", relativePath: ".daedalus/agents/quality-review.md" }
+        ,{ id: "agent:research", kind: "agent", name: "Research Agent", description: "Daedalus research and analysis agent.", source: "default", relativePath: ".daedalus/agents/research.md" }
+      ],
+      knowledge: [
+        { id: "project:knowledge:architecture", name: "项目架构说明", description: "当前项目的模块边界与数据流。", scope: "project", source: "direct", relativePath: ".daedalus/knowledge/architecture.md", content: "# 项目架构说明\n\n模块说明。" },
+        { id: "global:knowledge:engineering", name: "团队工程约定", description: "跨项目共享的工程实践。", scope: "global", source: "direct", relativePath: "engineering.md", content: "# 团队工程约定\n\n工程约定。" },
+        { id: "linked:linked-preview-handbook:guides/release.md", name: "发布检查清单", description: "来自团队研发手册的发布约定。", scope: "project", source: "linked", linkedDirId: "linked-preview-handbook", absolutePath: "/demo/team-handbook/guides/release.md", relativePath: "guides/release.md", content: "# 发布检查清单\n\n发布前完成类型检查、测试与变更核对。" }
+      ],
+      artifacts: [
+        { id: "artifact:plans/implementation-plan.md", name: "Daedalus 实施计划", relativePath: "plans/implementation-plan.md", workflowId: "standard-development", stepId: "implementation", kind: "plan", updatedAt: new Date(Date.now() - 3600000).toISOString(), content: "---\ndaedalusKind: plan\ndaedalusWorkflowId: standard-development\ndaedalusStepId: implementation\n---\n\n# Daedalus 实施计划\n\n## 目标\n\n完成工作台和文档输出能力。\n\n- 统一界面\n- 验证输出目录" },
+        { id: "artifact:design/architecture.md", name: "插件架构设计", relativePath: "design/architecture.md", workflowId: "standard-development", stepId: "design", kind: "design", updatedAt: new Date(Date.now() - 7200000).toISOString(), content: "---\ndaedalusKind: design\ndaedalusWorkflowId: standard-development\ndaedalusStepId: design\n---\n\n# 插件架构设计\n\n工作台负责流程编排，MCP 负责 Agent 能力。" }
+      ],
+      globalImports: [],
+      globalLocalImports: []
+    };
+    let previewUiState = {};
+    let previewInitialized = new URLSearchParams(location.search).get("initialized") !== "0";
+    const emitPreviewState = () => window.dispatchEvent(new MessageEvent("message", { data: sample }));
+    const emitPreviewUninitialized = () => window.dispatchEvent(new MessageEvent("message", { data: {
+      type: "not_initialized",
+      workspace: sample.workspace,
+      version: sample.version,
+      config: { workflows: [], imports: [], localImports: [], settings: { ...sample.config.settings } },
+      state: { version: 2, progress: [], runs: [], localChanges: [], gates: sample.state.gates.filter((item) => item.origin === "user") },
+      preferences: sample.preferences
+    } }));
+    const previewId = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    const workflowById = (id) => sample.config.workflows.find((workflow) => workflow.id === id);
+    const progressForPreview = (workflow) => {
+      let progress = sample.state.progress.find((item) => item.workflowId === workflow.id);
+      if (!progress) {
+        progress = { workflowId: workflow.id, currentStepId: workflow.steps[0]?.id || null, completed: [], updatedAt: new Date().toISOString() };
+        sample.state.progress.push(progress);
+      }
+      return progress;
+    };
+    const advancePreview = (summary) => {
+      const workflow = workflowById(sample.config.activeWorkflowId);
+      if (!workflow) return;
+      const progress = progressForPreview(workflow);
+      const index = workflow.steps.findIndex((step) => step.id === progress.currentStepId);
+      if (index < 0) return;
+      progress.completed = [...progress.completed.filter((item) => item.stepId !== progress.currentStepId), { stepId: progress.currentStepId, summary: summary || "Preview 中确认完成", completedAt: new Date().toISOString() }];
+      progress.currentStepId = workflow.steps[index + 1]?.id || null;
+      progress.updatedAt = new Date().toISOString();
+      sample.agentExecution = { status: "completed", workflowId: workflow.id, stepId: workflow.steps[index].id, message: "已确认完成并推进" };
+      sample.conversationSignal = null;
+    };
+    const handlePreviewMessage = (message) => {
+      const workflow = workflowById(message.workflowId || sample.config.activeWorkflowId);
+      if (["ready", "refresh"].includes(message.type)) return true;
+      if (message.type === "initialize_workspace") previewInitialized = true;
+      else if (["cleanup_workspace", "uninstall_daedalus"].includes(message.type)) previewInitialized = false;
+      else if (message.type === "select_workflow" && workflowById(message.id)) sample.config.activeWorkflowId = message.id;
+      else if (message.type === "add_workflow") {
+        const id = previewId("workflow");
+        sample.config.workflows.push({ id, name: message.name || "新研发流程", description: message.description || "Preview 自定义研发流程", agentId: message.agentId || "agent:implementation", steps: [] });
+        sample.config.activeWorkflowId = id;
+      } else if (message.type === "update_workflow") {
+        const target = workflowById(message.id);
+        if (target) Object.assign(target, { name: message.name || target.name, description: message.description || "", agentId: message.agentId || undefined });
+      } else if (message.type === "delete_workflow") {
+        sample.config.workflows = sample.config.workflows.filter((item) => item.id !== message.id);
+        sample.state.progress = sample.state.progress.filter((item) => item.workflowId !== message.id);
+        if (sample.config.activeWorkflowId === message.id) sample.config.activeWorkflowId = sample.config.workflows[0]?.id || "";
+      } else if (message.type === "add_step" && workflow) {
+        workflow.steps.push({ id: previewId("step"), name: message.name || "新步骤", description: "尚未填写步骤说明", skillIds: [], ruleIds: [], knowledgeIds: [], standards: [] });
+      } else if (message.type === "save_step" && workflow) {
+        const step = workflow.steps.find((item) => item.id === message.stepId);
+        if (step) Object.assign(step, { name: message.name || step.name, description: message.description || "", skillIds: message.skillIds || [], ruleIds: message.ruleIds || [], knowledgeIds: message.knowledgeIds || [], standards: (message.standards || []).filter(Boolean) });
+      } else if (message.type === "move_step" && workflow) {
+        const index = workflow.steps.findIndex((step) => step.id === message.stepId);
+        const next = index + (message.direction === "up" ? -1 : 1);
+        if (index >= 0 && next >= 0 && next < workflow.steps.length) [workflow.steps[index], workflow.steps[next]] = [workflow.steps[next], workflow.steps[index]];
+      } else if (message.type === "delete_step" && workflow) {
+        workflow.steps = workflow.steps.filter((step) => step.id !== message.stepId);
+        const progress = progressForPreview(workflow);
+        progress.completed = progress.completed.filter((item) => item.stepId !== message.stepId);
+        if (progress.currentStepId === message.stepId) progress.currentStepId = workflow.steps.find((step) => !progress.completed.some((item) => item.stepId === step.id))?.id || null;
+      } else if (message.type === "reset_workflow" && workflow) {
+        const progress = progressForPreview(workflow);
+        Object.assign(progress, { currentStepId: workflow.steps[0]?.id || null, completed: [], updatedAt: new Date().toISOString() });
+        sample.agentExecution = { status: "idle" };
+      } else if (message.type === "revert_step" && workflow) {
+        const progress = progressForPreview(workflow);
+        const index = workflow.steps.findIndex((step) => step.id === message.stepId);
+        progress.currentStepId = message.stepId;
+        progress.completed = progress.completed.filter((item) => workflow.steps.findIndex((step) => step.id === item.stepId) < index);
+      } else if (message.type === "set_current_step" && workflow) {
+        const progress = progressForPreview(workflow);
+        const index = workflow.steps.findIndex((step) => step.id === message.stepId);
+        const previous = new Map(progress.completed.map((item) => [item.stepId, item]));
+        progress.completed = workflow.steps.slice(0, index).map((step) => previous.get(step.id) || { stepId: step.id, summary: "用户选择从此阶段开始，已跳过", completedAt: new Date().toISOString() });
+        progress.currentStepId = message.stepId;
+        progress.updatedAt = new Date().toISOString();
+        sample.agentExecution = { status: "idle" };
+      } else if (message.type === "execute_step" && workflow) {
+        const progress = progressForPreview(workflow);
+        const index = workflow.steps.findIndex((step) => step.id === message.stepId);
+        const previous = new Map(progress.completed.map((item) => [item.stepId, item]));
+        progress.completed = workflow.steps.slice(0, index).map((step) => previous.get(step.id) || { stepId: step.id, summary: "用户选择执行此阶段，已跳过", completedAt: new Date().toISOString() });
+        progress.currentStepId = message.stepId;
+        progress.updatedAt = new Date().toISOString();
+        const run = { id: previewId("run"), workflowId: workflow.id, stepId: message.stepId, channel: sample.config.settings.feedbackEnabled ? "feedback" : "cursor-native", status: "running", startedAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        sample.state.runs = [...(sample.state.runs || []), run];
+        sample.state.activeRunId = run.id;
+        sample.agentExecution = { ...run, runId: run.id, message: sample.config.settings.feedbackEnabled ? "通过 Feedback 执行当前阶段" : "通过 Cursor 原生对话执行当前阶段" };
+      } else if (message.type === "save_workflow_inputs" && workflow) progressForPreview(workflow).inputs = message.inputs || {};
+      else if (message.type === "advance_workflow") advancePreview(message.summary);
+      else if (message.type === "advance_from_signal") advancePreview(sample.conversationSignal?.excerpt);
+      else if (message.type === "execute_current_step") {
+        const current = workflow && progressForPreview(workflow).currentStepId;
+        const run = { id: previewId("run"), workflowId: workflow?.id, stepId: current, channel: sample.config.settings.feedbackEnabled ? "feedback" : "cursor-native", status: "running", startedAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        sample.state.runs = [...(sample.state.runs || []), run];
+        sample.state.activeRunId = run.id;
+        sample.agentExecution = { ...run, runId: run.id, message: sample.config.settings.feedbackEnabled ? "通过 Feedback 执行当前阶段" : "通过 Cursor 原生对话执行当前阶段" };
+      } else if (message.type === "stop_current_step") sample.agentExecution = { ...sample.agentExecution, status: "stopped", finishedAt: new Date().toISOString(), message: "已由用户停止" };
+      else if (message.type === "create_feedback_conversation") {
+        const now = new Date().toISOString();
+        const previewTitle = String(message.content || "新会话").replace(/\s+/g, " ").slice(0, 18);
+        sample.state.gates.unshift({ id: previewId("conversation"), type: "feedback", title: previewTitle, message: message.content || "", createdAt: now, updatedAt: now, status: "pending", origin: "user", messages: [
+          { role: "user", content: message.content || "", createdAt: now },
+          { role: "agent", content: "这是 Preview 中模拟的 Agent 回复。这个会话不依赖 Workspace 初始化，也不会推进研发流程。", createdAt: new Date().toISOString() }
+        ] });
+      } else if (message.type === "send_feedback_message") {
+        const conversation = sample.state.gates.find((item) => item.id === message.id && item.origin === "user");
+        if (conversation) {
+          const now = new Date().toISOString();
+          conversation.message = message.content || conversation.message;
+          conversation.updatedAt = now;
+          conversation.messages = [...(conversation.messages || []),
+            { role: "user", content: message.content || "", createdAt: now },
+            { role: "agent", content: "收到。Preview 已保留这段多轮会话上下文，你可以继续补充或调整方向。", createdAt: new Date().toISOString() }
+          ];
+        }
+      }
+      else if (message.type === "resolve_gate") {
+        const gate = sample.state.gates.find((item) => item.id === message.id);
+        if (gate) Object.assign(gate, { status: "resolved", decision: message.decision, response: message.response || "", resolvedAt: new Date().toISOString() });
+      } else if (message.type === "save_knowledge") {
+        const existing = sample.knowledge.find((item) => item.id === message.id);
+        if (existing) Object.assign(existing, { name: message.name, description: message.description || "", content: `# ${message.name}\n\n${message.content || ""}` });
+        else sample.knowledge.push({ id: `${message.scope || "project"}:knowledge:${previewId("entry")}`, name: message.name, description: message.description || "", scope: message.scope || "project", source: "direct", relativePath: `${message.name}.md`, content: `# ${message.name}\n\n${message.content || ""}` });
+      } else if (message.type === "create_library_item") {
+        sample.library.push({ id: `${message.kind}:${previewId("custom")}`, kind: message.kind, name: message.name, description: message.description || "", scope: message.scope || "project", source: "workspace", relativePath: `.daedalus/${message.kind}s/preview.md`, content: message.content || "" });
+      } else if (message.type === "import_git") {
+        const id = previewId("git-import");
+        const entry = { id, name: "preview-import", url: message.url || "https://example.com/team/standards.git", ref: message.ref || "main", subpath: message.subpath || "", target: message.target || "standards", scope: message.scope || "project", importedAt: new Date().toISOString(), relativePath: `${message.target === "knowledge" ? "knowledge-imports" : "imports"}/preview-import` };
+        if (entry.scope === "global") sample.globalImports.push(entry); else sample.config.imports.push(entry);
+        if (entry.target === "knowledge") sample.knowledge.push({ id: `${entry.scope}:git:${id}:README.md`, name: "导入知识示例", description: "来自 Preview Git 导入。", scope: entry.scope, source: "git", importId: id, relativePath: `${entry.relativePath}/README.md`, content: "# 导入知识示例" });
+        else sample.library.push({ id: `git:${id}:skill:preview`, kind: "skill", name: "Imported Preview Skill", description: "来自 Preview Git 导入。", scope: entry.scope, source: "git", importId: id, relativePath: `${entry.relativePath}/skills/preview/SKILL.md` });
+      } else if (message.type === "import_local_markdown") {
+        const id = previewId("local-import");
+        const entry = { id, name: "preview-local.md", target: message.target || "standards", kind: message.kind, scope: message.scope || "project", importedAt: new Date().toISOString(), relativePath: `${message.target === "knowledge" ? "knowledge" : `${message.kind}s`}/preview-local.md` };
+        if (entry.scope === "global") sample.globalLocalImports.push(entry); else sample.config.localImports.push(entry);
+        if (entry.target === "knowledge") sample.knowledge.push({ id: `${entry.scope}:knowledge:preview-local`, name: "本地知识示例", description: "Preview 本地 Markdown 导入。", scope: entry.scope, source: "local", importId: id, relativePath: entry.relativePath, content: "# 本地知识示例" });
+        else sample.library.push({ id: `${entry.kind || "skill"}:preview-local`, kind: entry.kind || "skill", name: "Local Preview Resource", description: "Preview 本地 Markdown 导入。", scope: entry.scope, source: "local", importId: id, relativePath: entry.relativePath });
+      } else if (message.type === "update_import") {
+        const imports = message.scope === "global" ? sample.globalImports : sample.config.imports;
+        const entry = imports.find((item) => item.id === message.id);
+        if (entry) entry.importedAt = new Date().toISOString();
+      } else if (message.type === "delete_import") {
+        if (message.scope === "global") sample.globalImports = sample.globalImports.filter((item) => item.id !== message.id);
+        else sample.config.imports = sample.config.imports.filter((item) => item.id !== message.id);
+        sample.library = sample.library.filter((item) => item.importId !== message.id);
+        sample.knowledge = sample.knowledge.filter((item) => item.importId !== message.id);
+      } else if (message.type === "link_knowledge_directory") {
+        const id = previewId("linked-preview");
+        const scope = message.scope === "global" ? "global" : "project";
+        sample.config.linkedKnowledgeDirs.push({ id, name: "新关联知识目录", path: `/demo/linked/${id}`, scope, linkedAt: new Date().toISOString() });
+        sample.knowledge.push({ id: `linked:${id}:engineering/api.md`, name: "团队 API 约定", description: "来自新关联目录的 Markdown 知识。", scope, source: "linked", linkedDirId: id, absolutePath: `/demo/linked/${id}/engineering/api.md`, relativePath: "engineering/api.md", content: "# 团队 API 约定\n\nPreview 中模拟的关联知识。" });
+      } else if (message.type === "unlink_knowledge_directory") {
+        sample.config.linkedKnowledgeDirs = sample.config.linkedKnowledgeDirs.filter((item) => item.id !== message.id);
+        sample.knowledge = sample.knowledge.filter((item) => item.linkedDirId !== message.id);
+      } else if (message.type === "update_language") {
+        sample.config.settings.language = message.language;
+        sample.preferences.languageSetting = message.language;
+        sample.preferences.language = message.language === "auto" ? "zh-CN" : message.language;
+      } else if (message.type === "update_theme") sample.preferences.themeSetting = message.theme;
+      else if (message.type === "update_feedback") sample.config.settings.feedbackEnabled = message.enabled;
+      else if (message.type === "update_continuous_feedback") sample.config.settings.continuousFeedback = message.enabled;
+      else if (message.type === "update_auto_execute") sample.config.settings.autoExecuteOnAdvance = message.enabled;
+      else if (message.type === "update_artifact_output") sample.config.settings.artifactOutput = { mode: message.mode, directory: message.directory, repositoryUrl: message.repositoryUrl, ref: message.ref };
+      else if (message.type === "acknowledge_conversation_signal" && sample.conversationSignal) sample.conversationSignal.acknowledgedAt = new Date().toISOString();
+      else if (message.type === "git_commit") {
+        const repo = sample.git.find((item) => item.root === message.repoRoot);
+        if (repo) repo.files = repo.files.filter((file) => !(message.paths || []).includes(file.path));
+      } else if (["open_config", "open_file", "open_item", "open_import_source", "open_artifact_preview", "git_open_diff", "git_refresh", "pick_workflow_input_file"].includes(message.type)) console.info("Preview action", message);
+      else return false;
+      return true;
+    };
+    window.acquireVsCodeApi = () => ({
+      postMessage(message) {
+        if (handlePreviewMessage(message)) setTimeout(() => previewInitialized ? emitPreviewState() : emitPreviewUninitialized(), 0);
+      },
+      getState() { return previewUiState; },
+      setState(value) { previewUiState = value || {}; }
+    });
+  </script>
+  <script src="../media/webview.js"></script>
+  <script>if (!previewInitialized) setTimeout(emitPreviewUninitialized, 0);</script>
+</body>
+</html>

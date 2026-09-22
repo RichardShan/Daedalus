@@ -1,0 +1,18 @@
+{
+  "displayName": "Daedalus 工作区研发治理",
+  "description": "面向 Cursor 与 VS Code 的工作区级研发流程、Skills、Rules、知识库与 Agent 规范工具。",
+  "command.initialize": "Daedalus：初始化当前工作区",
+  "command.openPanel": "Daedalus：打开研发治理面板",
+  "configuration.title": "Daedalus 工作区研发治理",
+  "configuration.collaborationTimeout": "MCP 协作请求等待用户响应的最长时间。",
+  "configuration.language": "Daedalus 界面语言；自动模式跟随当前 Cursor 或 VS Code 语言。",
+  "configuration.language.auto": "跟随 Cursor 或 VS Code 语言",
+  "configuration.language.zh": "简体中文",
+  "configuration.language.en": "英文",
+  "configuration.theme": "Daedalus 界面主题；自动模式跟随当前 Cursor 或 VS Code 颜色主题。",
+  "configuration.theme.auto": "跟随 Cursor 或 VS Code 主题",
+  "configuration.theme.light": "浅色",
+  "configuration.theme.dark": "深色",
+  "configuration.feedbackEnabled": "启用 Daedalus Feedback，用于独立会话和流程协作。",
+  "configuration.continuousFeedback": "在每个有实质内容的 Daedalus 对话周期后征求确认。"
+}

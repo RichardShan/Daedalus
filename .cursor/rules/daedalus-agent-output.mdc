@@ -1,0 +1,37 @@
+---
+description: Save Daedalus Agent non-code deliverables to the configured output directory
+globs: []
+alwaysApply: true
+---
+
+# Daedalus Agent document output
+
+When this Workspace contains `.daedalus/config.json`, treat Daedalus as the Workspace-level development Agent.
+
+When the user executes or discusses the active Daedalus workflow stage and the Daedalus MCP is available:
+
+1. Call `workflow_context` before substantial stage work. It returns references to Skills and Rules already installed in Cursor-native directories plus knowledge bound to the stage; use installed resources directly, then retrieve each bound knowledge item through `knowledge_search`, and never ask Daedalus to inline standards as prompt text.
+2. Before ending the stage response, call `workflow_report` with the bound `runId`, `ready`, `continue`, or `blocked`, plus a concise summary and evidence.
+3. `ready` is only a completion suggestion. Only the user can advance the workflow from the Workbench; no MCP tool may advance it.
+
+# Interaction language
+
+The `workflow_context` response includes a `language` field (`"zh-CN"` or `"en"`) reflecting the user's Daedalus language setting. Use this language for all user-facing text — including AskQuestion prompts, option labels, summaries, and explanations. When `workflow_context` has not been called (e.g. outside a workflow stage), follow the language the user is writing in.
+
+# Workspace-scoped feedback routing
+
+Before asking the user a question, requesting approval, or waiting for a decision, read `settings.feedbackEnabled` and `settings.continuousFeedback` from this Workspace's `.daedalus/config.json`.
+
+- If `feedbackEnabled` is `true`, you MUST call the Daedalus MCP `request_feedback` tool for every question. Keep and reuse its `threadId` for later turns in the same stage. Do not leave the question only in native chat.
+- If `feedbackEnabled` is `false`, you MUST NOT call `request_feedback`; continue the conversation in Cursor's native chat.
+- Ask only when installed Cursor Rules or an unresolved decision require it. The optional Daedalus Continuous Feedback rule separately controls mandatory end-of-cycle questions.
+- Never use Daedalus feedback for a different Workspace. The MCP client roots must contain this rule's Workspace.
+
+For substantial non-code deliverables such as plans, requirement summaries, architecture/design documents, review reports, and acceptance summaries:
+
+1. Read `settings.artifactOutput` from `.daedalus/config.json`.
+2. In `workspace` mode, save Markdown below the configured Workspace-relative `directory`.
+3. In `git` mode, save Markdown below `.daedalus/<repositoryRelativePath>/<directory>`.
+4. Add `daedalusWorkflowId` and `daedalusStepId` to YAML frontmatter so the document appears under its workflow stage.
+5. Keep development source code in its normal project location; do not copy code files into the document output directory.
+6. If the Daedalus MCP `agent_output` tool is available, prefer it because it validates the destination, filename, and stage metadata.

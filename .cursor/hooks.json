@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterAgentResponse": [
+      {
+        "command": "node .daedalus/scripts/conversation-monitor.cjs",
+        "timeout": 10
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .daedalus/scripts/feedback-resume.cjs",
+        "timeout": 10
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "node .daedalus/scripts/session-bind.cjs",
+        "timeout": 10
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "node .daedalus/scripts/inject-subagent-context.cjs",
+        "matcher": "Task|Subagent",
+        "timeout": 15
+      }
+    ]
+  }
+}

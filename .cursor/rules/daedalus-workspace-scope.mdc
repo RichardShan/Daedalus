@@ -1,0 +1,11 @@
+---
+description: All state, specs, and imported resources must be scoped to the current Workspace.
+globs: []
+alwaysApply: false
+---
+
+# Workspace Scope
+
+- Only read and modify files within the current Workspace's authorized scope.
+- Never carry configuration, context, or state from one Workspace into another.
+- Do not auto-start spec workflows in Workspaces where Daedalus is not initialized.

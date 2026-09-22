@@ -1,0 +1,18 @@
+{
+  "displayName": "Daedalus Workspace Governance",
+  "description": "Workspace-scoped development workflows, Skills, Rules, knowledge, and Agent governance for Cursor and VS Code.",
+  "command.initialize": "Daedalus: Initialize Current Workspace",
+  "command.openPanel": "Daedalus: Open Workspace Governance Panel",
+  "configuration.title": "Daedalus Workspace Governance",
+  "configuration.collaborationTimeout": "Maximum time an MCP collaboration request waits for a response.",
+  "configuration.language": "Daedalus interface language. Auto follows the current Cursor or VS Code language.",
+  "configuration.language.auto": "Follow Cursor or VS Code language",
+  "configuration.language.zh": "Simplified Chinese",
+  "configuration.language.en": "English",
+  "configuration.theme": "Daedalus interface theme. Auto follows the current Cursor or VS Code color theme.",
+  "configuration.theme.auto": "Follow Cursor or VS Code theme",
+  "configuration.theme.light": "Light",
+  "configuration.theme.dark": "Dark",
+  "configuration.feedbackEnabled": "Enable Daedalus Feedback for independent conversations and workflow collaboration.",
+  "configuration.continuousFeedback": "Ask for confirmation after each substantive Daedalus conversation cycle."
+}

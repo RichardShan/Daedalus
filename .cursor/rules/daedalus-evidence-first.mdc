@@ -1,0 +1,11 @@
+---
+description: Important conclusions must come from code, tests, or explicit runtime output.
+globs: []
+alwaysApply: false
+---
+
+# Evidence First
+
+- Inspect actual code and configuration before proposing a solution.
+- Do not present speculation as verified fact.
+- Completion claims must be backed by proportional verification evidence.

@@ -1,0 +1,111 @@
+{
+  "name": "daedalus-pipeline",
+  "displayName": "%displayName%",
+  "version": "0.21.12",
+  "description": "%description%",
+  "publisher": "local",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "assets/**",
+    "dist/**",
+    "package.nls*.json",
+    "README.md"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "main": "./dist/extension.cjs",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "daedalus.initializeWorkspace",
+        "title": "%command.initialize%"
+      },
+      {
+        "command": "daedalus.openPanel",
+        "title": "%command.openPanel%",
+        "icon": "$(hubot)"
+      }
+    ],
+    "configuration": {
+      "title": "%configuration.title%",
+      "properties": {
+        "daedalus.collaborationTimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1,
+          "maximum": 1440,
+          "description": "%configuration.collaborationTimeout%"
+        },
+        "daedalus.cursorAgentPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional absolute path to the Cursor Agent CLI. Leave empty to auto-detect cursor-agent."
+        },
+        "daedalus.language": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "zh-CN",
+            "en"
+          ],
+          "enumDescriptions": [
+            "%configuration.language.auto%",
+            "%configuration.language.zh%",
+            "%configuration.language.en%"
+          ],
+          "default": "auto",
+          "description": "%configuration.language%"
+        },
+        "daedalus.theme": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "light",
+            "dark"
+          ],
+          "enumDescriptions": [
+            "%configuration.theme.auto%",
+            "%configuration.theme.light%",
+            "%configuration.theme.dark%"
+          ],
+          "default": "auto",
+          "description": "%configuration.theme%"
+        },
+        "daedalus.feedbackEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "%configuration.feedbackEnabled%"
+        },
+        "daedalus.continuousFeedback": {
+          "type": "boolean",
+          "default": false,
+          "description": "%configuration.continuousFeedback%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "npm run typecheck && node esbuild.mjs",
+    "package:vsix": "npm run build && vsce package --allow-missing-repository --no-rewrite-relative-links",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

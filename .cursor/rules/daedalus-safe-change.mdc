@@ -1,0 +1,11 @@
+---
+description: Keep changes focused, reversible, and respectful of existing work.
+globs: []
+alwaysApply: false
+---
+
+# Safe Changes
+
+- Do not overwrite unrelated user modifications.
+- Destructive operations require explicit authorization and a precise target.
+- Justify new dependencies before adding them; never commit credentials.

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "daedalus": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/richard/.cursor/extensions/local.daedalus-pipeline-0.21.0/dist/mcp-server.cjs"
+      ],
+      "env": {
+        "DAEDALUS_WORKSPACE": "/Users/richard/project/cursor/Daedalus",
+        "DAEDALUS_GLOBAL_HOME": "/Users/richard/Library/Application Support/Cursor/User/globalStorage/local.daedalus-pipeline",
+        "DAEDALUS_COLLABORATION_TIMEOUT_MINUTES": "60",
+        "DAEDALUS_LANGUAGE": "en"
+      }
+    }
+  }
+}
