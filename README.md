@@ -101,5 +101,3 @@ npm test
 - 提交命令使用 Git 路径限定，只提交勾选文件，不会消耗未勾选的暂存改动。
 - `Commit and Push` 仅在 Commit 成功后执行 `git push`。
 - 如果 Workspace 中没有 Git 仓库，Daedalus 会以本地记录模式保存文件的创建、修改与删除记录；初始化 Git 后自动切换为 Git 未提交变更。
-
-参考插件的结构分析和简化取舍见 [docs/reference-analysis.md](docs/reference-analysis.md)。
